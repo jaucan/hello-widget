@@ -1,0 +1,356 @@
+<div id="hello-wrapper">
+  <div id="hello-rotator" aria-label="Greeting" role="text">¡Hola!</div>
+</div>
+
+<style>
+  #hello-wrapper{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+
+
+#hello-rotator{
+background: transparent;
+color: #F3F3F3;
+font-family: "Spline Sans", system-ui, sans-serif;
+font-size: 32px;
+font-weight: 500;
+line-height: 1.1;
+white-space: nowrap;
+transition: opacity 130ms ease;
+will-change: opacity;
+}
+
+  #hello-rotator.is-fading{
+    opacity: 0;
+  }
+</style>
+
+<script>
+(function(){
+  if (window.__HELLO_ROTATOR_RUNNING__) return;
+  window.__HELLO_ROTATOR_RUNNING__ = true;
+
+  const el = document.getElementById("hello-rotator");
+  if (!el) return;
+
+  const ES = { text: "¡Hola!",  label: "Spanish" };
+  const EN = { text: "Hello!",  label: "English" };
+
+  const greetings = [
+
+    // Europa occidental / Ibéricas
+    { text: "Olá!",        label: "Portuguese" },
+    { text: "Bonjour!",    label: "French" },
+    { text: "Ciao!",       label: "Italian" },
+    { text: "Hallo!",      label: "German" },
+    { text: "Ola!",        label: "Galician" },
+    { text: "Hola!",       label: "Catalan" },
+    { text: "Kaixo!",      label: "Basque" },
+
+    // Lengua clásica
+    { text: "Salve!",      label: "Latin" },
+
+    // Celtas
+    { text: "Dia dhuit!",  label: "Irish" },
+    { text: "Halò!",       label: "Scottish Gaelic" },
+    { text: "Helo!",       label: "Welsh" },
+
+    // Nórdicas / Atlánticas
+    { text: "Hei!",        label: "Finnish" },
+    { text: "Heisann!",    label: "Norwegian" },
+    { text: "Hej!",        label: "Swedish" },
+    { text: "Hejsa!",      label: "Danish" },
+    { text: "Hoi!",        label: "Dutch" },
+    { text: "Halló!",      label: "Icelandic" },
+
+    // Europa central y este (latín vs otros alfabetos)
+    { text: "Ahoj!",          label: "Czech" },
+    { text: "Cześć!",         label: "Polish" },
+    { text: "Salut!",         label: "Romanian" },
+    { text: "Szia!",          label: "Hungarian" },
+    { text: "Привет!",        label: "Russian – Privet" },
+    { text: "Привіт!",        label: "Ukrainian – Pryvit" },
+    { text: "Γεια σου!",       label: "Greek – Geia sou" },
+    { text: "Përshëndetje!",  label: "Albanian" },
+    { text: "Bok!",           label: "Croatian" },
+    { text: "Здраво!",        label: "Serbian – Zdravo" },
+    { text: "Ћао!",           label: "Montenegrin – Ciao" },
+    { text: "Здравей!",       label: "Bulgarian – Zdravey" },
+    { text: "Živjo!",         label: "Slovene" },
+
+    // Bálticos
+    { text: "Tere!",          label: "Estonian" },
+    { text: "Sveiki!",        label: "Latvian" },
+    { text: "Labas!",         label: "Lithuanian" },
+
+    // Microestados
+    { text: "Moien!",         label: "Luxembourgish" },
+    { text: "Bongu!",         label: "Maltese" },
+
+    // Cáucaso
+    { text: "გამარჯობა!",      label: "Georgian – Gamarjoba" },
+    { text: "Բարև!",          label: "Armenian – Barev" },
+
+    // Asia mayor (grandes)
+    { text: "नमस्ते!",         label: "Hindi – Namaste" },
+
+    // ✅ One single Chinese entry (no repeated glyphs across “groups”)
+    { text: "你好！",           label: "Chinese – Nǐ hǎo" },
+
+    { text: "こんにちは！",       label: "Japanese – Konnichiwa" },
+    { text: "안녕하세요!",        label: "Korean – Annyeonghaseyo" },
+    { text: "Merhaba!",       label: "Turkish" },
+    { text: "สวัสดี!",         label: "Thai – Sawatdee" },
+    { text: "Xin chào!",      label: "Vietnamese" },
+    { text: "হ্যালো!",         label: "Bengali – Hyalo" },
+    { text: "שלום!",          label: "Hebrew – Shalom" },
+    { text: "سلام!",          label: "Persian – Salam" },
+
+    // Sudeste / Asia extra
+    { text: "Om Swastyastu!",  label: "Balinese" },
+    { text: "សួស្តី!",          label: "Khmer – Suostei" },
+    { text: "ສະບາຍດີ!",         label: "Lao – Sabaidee" },
+    { text: "你好呀！",           label: "Cantonese – Nei hou a" },
+
+    // Indo-ario y dravídicas extra
+    { text: "السلام علیکم",      label: "Urdu – As-salamu alaykum" },
+    { text: "வணக்கம்!",          label: "Tamil – Vanakkam" },
+    { text: "નમસ્તે!",           label: "Gujarati – Namaste" },
+    { text: "नमस्कार!",           label: "Marathi/Nepali – Namaskar" },
+    { text: "ನಮಸ್ಕಾರ!",          label: "Kannada – Namaskara" },
+    { text: "നമസ്കാരം!",          label: "Malayalam – Namaskaram" },
+    { text: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ!",       label: "Punjabi – Sat Sri Akal" },
+    { text: "నమస్కారం!",          label: "Telugu – Namaskaram" },
+
+    // Indo-ario extra grandes
+    { text: "प्रणाम!",           label: "Bhojpuri – Pranam" },
+    { text: "ନମସ୍କାର!",           label: "Odia – Namaskar" },
+    { text: "खम्मा घणी!",         label: "Rajasthani – Khamma Ghani" },
+    { text: "खम्मा घणी!",         label: "Marwari – Khamma Ghani" },
+    { text: "Juhar!",            label: "Chhattisgarhi" },
+    { text: "नमस्कार!",           label: "Magahi – Namaskar" },
+    { text: "नमस्कार!",           label: "Maithili – Namaskar" },
+
+    // Asia central
+    { text: "Salom!",           label: "Uzbek" },
+    { text: "Сәлем!",           label: "Kazakh – Salem" },
+
+    // Mongolia
+    { text: "Сайн уу?",          label: "Mongolian – Sain uu" },
+
+    // Sri Lanka
+    { text: "ආයුබෝවන්!",         label: "Sinhala – Ayubowan" },
+
+    // América indígena
+    { text: "Rimaykullayki!",    label: "Quechua" },
+    { text: "Yáʼátʼééh!",        label: "Navajo – Ya'at'eeh" },
+    { text: "ᎣᏏᏲ!",              label: "Cherokee – Osiyo" },
+    { text: "Ba'ax ka wa'alik?", label: "Yucatec Maya" },
+    { text: "Niltze!",           label: "Nahuatl" },
+    { text: "Mari mari!",        label: "Mapudungun" },
+
+    // África
+    { text: "Sawubona!",         label: "Zulu" },
+    { text: "Habari!",           label: "Swahili" },
+    { text: "Mbote!",            label: "Lingala" },
+    { text: "Is ka warran?",     label: "Somali" },
+    { text: "Salaam aleekum!",   label: "Wolof – Salaam aleekum" },
+    { text: "Ẹ n lẹ!",            label: "Yoruba" },
+    { text: "Ndewo!",            label: "Igbo" },
+    { text: "Akkam!",            label: "Oromo" },
+    { text: "A jaaraama!",       label: "Fula/Fulani" },
+    { text: "Amahoro!",          label: "Kirundi" },
+    { text: "Nalaw!",            label: "Serer" },
+    { text: "ሰላም!",             label: "Amharic – Selam" },
+    { text: "ሰላምታ!",            label: "Tigrinya – Selamta" },
+    { text: "Sannu!",            label: "Hausa" },
+
+    // África austral / índico
+    { text: "Manao ahoana!",     label: "Malagasy" },
+
+    // Sudeste / Malayo-polinesias
+    { text: "Kia ora!",          label: "Māori" },
+    { text: "Halo!",             label: "Indonesian" },
+    { text: "Apa khabar!",       label: "Malay" },
+    { text: "Bula!",             label: "Fijian" },
+    { text: "Talofa!",           label: "Samoan" },
+    { text: "Mālō e lelei!",     label: "Tongan" },
+
+    // Filipinas
+    { text: "Kamusta!",          label: "Filipino/Tagalog" },
+    { text: "Kumusta!",          label: "Cebuano" },
+    { text: "Kamusta ka?",       label: "Hiligaynon" },
+    { text: "Kumusta!",          label: "Ilocano" },
+
+    // Indonesia extra
+    { text: "Salamet!",          label: "Madurese" },
+    { text: "Wilujeng!",         label: "Sundanese" },
+
+    // Oriente Medio / Asia
+    { text: "سلامونه!",           label: "Pashto – Salamona" },
+    { text: "سڵاو!",             label: "Kurdish (Sorani) – Slaw" },
+    { text: "السلام عليڪم",        label: "Sindhi – As-salamu alaykum" },
+
+    // Lenguas túrquicas / altái
+    { text: "Сәлам!",            label: "Tatar – Selam" },
+
+    // Polares
+    { text: "ᐊᐃ!",              label: "Inuktitut – Ai" },
+
+    // Europa raras / minoritarias extra
+    { text: "Bos díes!",         label: "Asturian" },
+    { text: "Bues días!",        label: "Leonese" },
+    { text: "Boz dias!",         label: "Aragonese" },
+    { text: "Bondie!",           label: "Mirandese" },
+    { text: "Adiu!",             label: "Aranese" },
+    { text: "Bonjorn!",          label: "Occitan" },
+    { text: "Degemer mat!",      label: "Breton" },
+    { text: "Dydh da!",          label: "Cornish" },
+    { text: "Fastyr mie!",       label: "Manx" },
+    { text: "Bona die!",         label: "Sardinian" },
+    { text: "Mandi!",            label: "Friulian" },
+    { text: "Allegra!",          label: "Romansh" },
+    { text: "Goeie!",            label: "West Frisian" },
+    { text: "Bures!",            label: "Northern Sami" },
+    { text: "Bueñs díes!",       label: "Babianu" },
+
+    // Himalaya / Tibetano
+    { text: "བཀྲ་ཤིས་བདེ་ལགས།", label: "Tibetan – Tashi delek" },
+
+    // Inglés variaciones
+    { text: "G'day!",            label: "Australian English" },
+    { text: "Howdy!",            label: "Southern US English" },
+
+    // Lenguas de signos (texto simbólico)
+    { text: "🤟 Hello",          label: "American Sign Language (ASL)" },
+    { text: "🤟 Hola",           label: "Spanish Sign Language (LSE)" },
+
+    // ———————————— Minoritarias europeas nuevas ————————————
+    { text: "Guid day!",         label: "Scots" },
+    { text: "שלום־עליכם",         label: "Yiddish – Sholem aleichem" },
+    { text: "Alo!",              label: "Ladino" },
+    { text: "Bună dzua!",        label: "Aromanian" },
+    { text: "Dzień dobri!",      label: "Kashubian" },
+    { text: "Ciau!",             label: "Sicilian" },
+    { text: "Moin!",             label: "Low German" },
+    { text: "Добрий день!",      label: "Rusyn – Dobryj den" },
+    { text: "Bon dia!",          label: "Papiamentu" },
+    { text: "Slán!",             label: "Shelta" },
+    { text: "Bona!",             label: "Polari" },
+
+    // ———————————— Important 2.5M+ adds ————————————
+    { text: "مرحبا!",            label: "Arabic (MSA) – Marhaba" },
+    { text: "إزيك؟",             label: "Egyptian Arabic – Izzayyak/Izzayyek" },
+    { text: "မင်္ဂလာပါ!",         label: "Burmese – Mingalaba" },
+    { text: "Halo!",             label: "Javanese (often written same as Indonesian)" },
+    { text: "How far?",          label: "Nigerian Pidgin – How far?" },
+    { text: "नमस्ते!",            label: "Nepali – Namaste" },
+    { text: "Salam!",            label: "Azerbaijani" },
+    { text: "Haai!",             label: "Afrikaans" },
+    { text: "Molo!",             label: "Xhosa" },
+    { text: "Mhoro!",            label: "Shona" },
+    { text: "Moni!",             label: "Chichewa/Nyanja" },
+    { text: "Muraho!",           label: "Kinyarwanda" }
+  ];
+
+  const intervalMs = 2500;
+  const fadeMs = 130;
+  const randomPerBlock = 6; // ES + EN + 6 aleatorios
+
+const greetingsCount = greetings.length;
+
+function buildBlock(){
+
+const block = [ES, EN];
+const usedIndexes = new Set();
+
+while (usedIndexes.size < randomPerBlock){
+
+const idx = Math.floor(Math.random() * greetingsCount);
+
+if (!usedIndexes.has(idx)){
+usedIndexes.add(idx);
+block.push(greetings[idx]);
+}
+}
+
+return block;
+}
+
+  let currentBlock = buildBlock();
+  let idxInBlock = 1;              // ES already shown at init
+  let lastLabel = ES.label;        // avoid same language twice in a row
+
+
+let currentFontSize = "32px";
+  function tick(){
+    el.classList.add("is-fading");
+
+    setTimeout(() => {
+
+      if (idxInBlock >= currentBlock.length){
+        idxInBlock = 0;
+        currentBlock = buildBlock();
+      }
+
+      let nextGreeting = currentBlock[idxInBlock];
+
+      // ✅ Avoid same language twice in a row (by label)
+      let tries = 0;
+      while (nextGreeting && nextGreeting.label === lastLabel && tries < currentBlock.length){
+        idxInBlock++;
+        if (idxInBlock >= currentBlock.length){
+          idxInBlock = 0;
+          currentBlock = buildBlock();
+        }
+        nextGreeting = currentBlock[idxInBlock];
+        tries++;
+      }
+
+      // Fallback: reshuffle if we still land on the same label
+      if (nextGreeting && nextGreeting.label === lastLabel){
+        currentBlock = buildBlock();
+        idxInBlock = 0;
+        nextGreeting = currentBlock[idxInBlock];
+      }
+
+      const t = nextGreeting.text;
+      const len = t.length;
+
+      // Ajuste de tamaño según longitud
+let newSize = "32px";
+
+if (len > 20){
+ newSize = "24px";
+} else if (len > 12){
+ newSize = "28px";
+}
+
+if (newSize !== currentFontSize){
+ el.style.fontSize = newSize;
+ currentFontSize = newSize;
+}
+
+
+      el.textContent = t;
+      el.title = nextGreeting.label;
+      el.classList.remove("is-fading");
+
+      lastLabel = nextGreeting.label;
+      idxInBlock++;
+
+    }, fadeMs);
+  }
+
+  // init
+  el.textContent = ES.text;
+  el.title = ES.label;
+
+  setInterval(tick, intervalMs);
+
+})();
+</script>
